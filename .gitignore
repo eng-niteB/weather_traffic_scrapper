@@ -1,0 +1,5 @@
+#Ignorar configurações do PostGres
+database/
+
+#Ignorar variáveis de ambiente
+*.env
