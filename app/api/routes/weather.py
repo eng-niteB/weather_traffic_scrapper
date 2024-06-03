@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+from app.api.services.openWeather import get_weather_data
 
 router = APIRouter()
 
@@ -12,9 +13,12 @@ URL teste rota /weather/city/get_data:
 
 @router.get("/weather/city/get_data", tags=["city"])
 def api_get_city_data(city: str, lang: str):
-    print(f'Cidade : {city}, Lingua: {lang}')
-    return JSONResponse(
-        status_code=200,
-        content={"city" : city, "lang": lang},
-        headers={"Success" : "Resquest successful"}
-    )
+    weatherJson = get_weather_data(city,lang)
+    if 'error' in weatherJson:
+        return JSONResponse(
+            status_code=weatherJson.get('status', 500),
+            content=weatherJson['error'],
+            headers={"X-Error": "There was an error with the request"}
+        )
+    else:
+        return weatherJson
